@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Bảng Công</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+    /* Ẩn form ban đầu */
+    #Update {
+      display: none;
+    }
+    #Create{
+        display: none;
+    }
+    #formExcel{
+        display: none;
+    }
+    #locNV{
+        display: none;
+    }
+  </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="container mt-5">
+        <button onclick="createForm()" class="btn btn-outline-primary">Chấm Công</button>
+        <button onclick="formExcel()" class="btn btn-outline-secondary">Xuất File Excel</button>
+        <button onclick="locNV()" class="btn btn-outline-secondary">Lọc Mã Nhân Viên</button>
+
+    <form id="" action="/so_ngay_lam_viec" method="POST" style="display:inline;">
+         <button onclick="" type="submit" id="maNV" name="MãNV" for="maNV" class="btn btn-outline-dark" required>Số Ngày Làm Việc</button>
+
+        {% for item in ngayLamViec %}
+                <li>Nhân viên có mã  {{ item[0] }} có: {{ item[1] }} ngày</li>
+            {% endfor %}
+    </form>
+    <form id="formExcel" action="/down" method="POST">
+        <label for="maNV">Nhập Mã NV:</label>
+        <input type="text" id="maNV" name="maNV" required>
+        <button type="submit">Xuất File Excel</button>
+    </form>
+    <form id="locNV" action="/search" method="POST">
+        <label for="maNV">Lọc Mã Nhân Viên:</label>
+        <input type="text" id="maNV" name="maNV" required>
+        <button type="submit">Lọc </button>
+    </form>
+
+        <form id="Create" action="/create" method="POST">
+    <h2>Create Data</h2>
+     <label>
+        <input type="text" name="MãNV" placeholder="Mã NV">
+    </label>
+    <label>
+        <input type="text" name="TênNV" placeholder="Tên NV">
+    </label>
+    <label>
+        <input type="date" name="Ngày" placeholder="Ngày">
+    </label>
+    <label>
+        <input type="time" name="GiờVào" placeholder="Giờ Vào">
+    </label>
+    <label>
+        <input type="time" name="GiờRa" placeholder="Giờ Ra">
+    </label>
+    <label>
+        <input type="text" name="GhiChú" placeholder="Ghi Chú">
+    </label>
+    <input  type="submit" value="Create">
+</form>
+
+
+
+<form id="Update" action="/update" method="POST">
+    <h2>Update Data</h2>
+     <label>
+        <input type="text" name="MãNV" placeholder="Mã NV">
+    </label>
+    <label>
+        <input type="text" name="TênNV" placeholder="Tên NV">
+    </label>
+    <label>
+        <input type="date" name="Ngày" placeholder="Ngày">
+    </label>
+    <label>
+        <input type="time" name="GiờVào" placeholder="Giờ Vào">
+    </label>
+    <label>
+        <input type="time" name="GiờRa" placeholder="Giờ Ra">
+    </label>
+    <label>
+        <input type="text" name="GhiChú" placeholder="Ghi Chú">
+
+
+    </label>
+    <input type="submit" value="Update">
+</form>
+
+
+    </div>
+        <h1>Danh sách Chấm Công</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Mã NV</th>
+                    <th scope="col">Tên NV</th>
+                    <th scope="col">Ngày</th>
+                    <th scope="col">Thứ</th>
+                    <th scope="col">Giờ Vào</th>
+                    <th scope="col">Giờ Ra</th>
+                    <th scope="col">Số Giờ Làm Việc</th>
+                    <th scope="col">Ghi Chú</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[7] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td>
+                        <td>{{ row[6] }}</td>
+                        <td>
+                            <button onclick="updateForm()" type="submit" class="btn btn-warning btn-sm">Sửa</button>
+
+                            <form method="post" action="{{ url_for('delete_data') }}"  style="display:inline;">
+                                <input type="hidden" name="MãNV" value="{{ row[0] }}">
+                                <input type="hidden" name="Ngay" value="{{ row[2] }}">
+                                <button  type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Hàm để ẩn/hiển thị form
+    function updateForm() {
+      var form = document.getElementById("Update");
+      if (form.style.display === "none") {
+        form.style.display = "block";
+      } else {
+        form.style.display = "none";
+      }
+    }
+  </script>
+
+<script>
+    // Hàm để ẩn/hiển thị form
+    function createForm() {
+      var form = document.getElementById("Create");
+      if (form.style.display === "none") {
+        form.style.display = "block";
+      } else {
+        form.style.display = "none";
+      }
+    }
+  </script>
+
+<script>
+    // Hàm để ẩn/hiển thị form
+    function formExcel() {
+      var form = document.getElementById("formExcel");
+      if (form.style.display === "none") {
+        form.style.display = "block";
+      } else {
+        form.style.display = "none";
+      }
+    }
+  </script>
+<script>
+    // Hàm để ẩn/hiển thị form
+    function locNV() {
+      var form = document.getElementById("locNV");
+      if (form.style.display === "none") {
+        form.style.display = "block";
+      } else {
+        form.style.display = "none";
+      }
+    }
+  </script>
+
+</body>
+</html>
